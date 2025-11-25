@@ -5,25 +5,50 @@
 // ============================================
 // VISITOR COUNTER (訪問者カウンター)
 // ============================================
-function initVisitorCounter() {
+async function initVisitorCounter() {
     const counterElement = document.getElementById('visitorCount');
     
-    // LocalStorageから訪問者数を取得（グローバルカウント）
-    let globalCount = localStorage.getItem('aiWeaponShop_globalVisitors');
+    // 一時的な表示
+    counterElement.textContent = '...';
     
-    if (!globalCount) {
-        // 初回訪問の場合、ランダムな開始値（リアリティのため）
-        globalCount = Math.floor(Math.random() * 500) + 100;
-    } else {
-        globalCount = parseInt(globalCount);
+    try {
+        // ユニーク訪問者かチェック（LocalStorageで判定）
+        const hasVisited = localStorage.getItem('aiWeaponShop_hasVisited');
+        
+        // CountAPI.xyz を使用して訪問者数を取得・カウント
+        const namespace = 'wagachanminigame';
+        const key = 'ai-weapon-shop-visitors';
+        
+        let response;
+        if (!hasVisited) {
+            // 初回訪問の場合、カウントアップ
+            response = await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
+            localStorage.setItem('aiWeaponShop_hasVisited', 'true');
+        } else {
+            // 再訪問の場合、現在のカウントのみ取得
+            response = await fetch(`https://api.countapi.xyz/get/${namespace}/${key}`);
+        }
+        
+        if (response.ok) {
+            const data = await response.json();
+            const visitorCount = data.value || 1;
+            
+            // カウントアップアニメーション
+            animateCounter(counterElement, 0, visitorCount, 2000);
+        } else {
+            // APIエラーの場合、フォールバック
+            throw new Error('API Error');
+        }
+    } catch (error) {
+        console.error('Visitor counter error:', error);
+        
+        // エラー時のフォールバック（LocalStorageベース）
+        let localCount = parseInt(localStorage.getItem('aiWeaponShop_localVisitors') || '0');
+        localCount++;
+        localStorage.setItem('aiWeaponShop_localVisitors', localCount.toString());
+        
+        counterElement.textContent = localCount.toLocaleString('ja-JP');
     }
-    
-    // 訪問ごとにカウントアップ
-    globalCount++;
-    localStorage.setItem('aiWeaponShop_globalVisitors', globalCount);
-    
-    // カウントアップアニメーション
-    animateCounter(counterElement, 0, globalCount, 2000);
 }
 
 // カウントアップアニメーション
@@ -35,7 +60,7 @@ function animateCounter(element, start, end, duration) {
     const timer = setInterval(() => {
         current += increment;
         if (current >= end) {
-            element.textContent = end.toLocaleString('ja-JP');
+            element.textContent = Math.floor(end).toLocaleString('ja-JP');
             clearInterval(timer);
         } else {
             element.textContent = Math.floor(current).toLocaleString('ja-JP');
