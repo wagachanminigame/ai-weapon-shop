@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>AI TOOL WEAPON SHOP - 人生攻略の最強装備を授ける武器屋</title>
+    <meta name="description" content="人生という無理ゲーをAIで攻略中。冒険者に最強のAI武器を授ける装備屋です。AI活用術、SNS運用の裏技を毎日ドロップ。難しいコードは魔法（AI）にお任せ。一緒にLv.99目指そうぜ！">
+    <meta name="keywords" content="AI,ツール,武器,装備,人生攻略,SNS運用,AI活用術,副業,自動化">
+    <meta name="author" content="AI Weapon Shop">
+    
+    <!-- Open Graph / SNS -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="AI TOOL WEAPON SHOP - 最強装備の受け取りはこちら">
+    <meta property="og:description" content="人生という無理ゲーをAIで攻略中。あなたに最強のAI武器を授ける装備屋です。">
+    <meta property="og:image" content="./images/banner.png">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AI TOOL WEAPON SHOP">
+    <meta name="twitter:description" content="人生攻略の最強装備を授ける武器屋">
+    <meta name="twitter:image" content="./images/banner.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ============================================
+         HEADER & NAVIGATION
+         ============================================ -->
+    <header>
+        <nav>
+            <div class="logo">AI WEAPON SHOP</div>
+            <button class="menu-toggle" id="menuToggle" aria-label="メニュー">☰</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">ホーム</a></li>
+                <li><a href="#weapons">武器庫</a></li>
+                <li><a href="#latest">最新情報</a></li>
+                <li><a href="#subscribe">サブスク</a></li>
+                <li><a href="#contact">依頼</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ============================================
+         HERO SECTION
+         ============================================ -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">⚡ 人生攻略の装備屋 ⚡</div>
+                
+                <!-- 訪問者カウンター -->
+                <div class="visitor-counter">
+                    <span>🎮</span>
+                    <span>あなたは</span>
+                    <span class="count" id="visitorCount">0</span>
+                    <span>人目の冒険者です</span>
+                </div>
+                
+                <h1 class="hero-title">AI TOOL<br>WEAPON SHOP</h1>
+                
+                <p class="hero-description">
+                    人生という無理ゲーをAIで攻略中。<br>
+                    ここは冒険者（あなた）に最強のAI武器を授ける装備屋です。<br>
+                    「作りたい」を形にするAI活用術や、SNS運用の裏技を毎日ドロップ。<br>
+                    難しいコードは魔法（AI）にお任せ。<br>
+                    <span class="highlight glow-text">一緒にLv.99目指そうぜ！</span>
+                </p>
+                
+                <div class="hero-banner">
+                    <img src="./images/banner.png" alt="AI Tool Weapon Shop Banner" loading="eager">
+                </div>
+                
+                <div class="cta-buttons">
+                    <a href="#weapons" class="btn btn-primary">
+                        ⚔️ 最強装備を受け取る
+                    </a>
+                    <a href="#subscribe" class="btn btn-secondary">
+                        👑 プレミアム会員になる
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         STATS SECTION
+         ============================================ -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number" data-target="1000">0</span>
+                    <span class="stat-label">武器配布数</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" data-target="500">0</span>
+                    <span class="stat-label">冒険者数</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" data-target="50">0</span>
+                    <span class="stat-label">開発ツール数</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">∞</span>
+                    <span class="stat-label">可能性</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         WEAPONS SECTION (ツール武器庫)
+         ============================================ -->
+    <section class="weapons" id="weapons">
+        <div class="container">
+            <div class="section-header">
+                <h2>⚔️ 武器庫 - AI TOOLS</h2>
+                <p class="section-subtitle">
+                    人生攻略のための最強装備。すべて無料で受け取れます。
+                </p>
+            </div>
+            
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-badge new">NEW</div>
+                    <div class="card-icon">🎬</div>
+                    <h3 class="card-title">GifMojo AI</h3>
+                    <p class="card-description">
+                        動画から一瞬でGIF生成。Gemini AIで字幕も自動生成。
+                    </p>
+                    <a href="https://wagachanminigame.github.io/gifmojo-ai/" target="_blank" class="card-link">
+                        装備する →
+                    </a>
+                </div>
+                
+                <div class="tool-card">
+                    <div class="tool-badge">POPULAR</div>
+                    <div class="card-icon">✨</div>
+                    <h3 class="card-title">AI画像生成</h3>
+                    <p class="card-description">
+                        プロンプトから高品質な画像を生成。SNS投稿に最適。
+                    </p>
+                    <a href="#" class="card-link">
+                        近日公開 →
+                    </a>
+                </div>
+                
+                <div class="tool-card">
+                    <div class="tool-badge">HOT</div>
+                    <div class="card-icon">🎮</div>
+                    <h3 class="card-title">ミニゲーム</h3>
+                    <p class="card-description">
+                        HTML5で作ったミニゲーム集。遊びながら学べる。
+                    </p>
+                    <a href="#" class="card-link">
+                        遊ぶ →
+                    </a>
+                </div>
+                
+                <div class="tool-card">
+                    <div class="tool-badge">TOOL</div>
+                    <div class="card-icon">📝</div>
+                    <h3 class="card-title">note記事生成</h3>
+                    <p class="card-description">
+                        AIが記事を自動生成。SEO対策もバッチリ。
+                    </p>
+                    <a href="#" class="card-link">
+                        近日公開 →
+                    </a>
+                </div>
+                
+                <div class="tool-card">
+                    <div class="tool-badge">PREMIUM</div>
+                    <div class="card-icon">🤖</div>
+                    <h3 class="card-title">LINE Bot</h3>
+                    <p class="card-description">
+                        24時間自動応答。顧客対応を完全自動化。
+                    </p>
+                    <a href="#" class="card-link">
+                        近日公開 →
+                    </a>
+                </div>
+                
+                <div class="tool-card">
+                    <div class="tool-badge">FREE</div>
+                    <div class="card-icon">📊</div>
+                    <h3 class="card-title">SNS分析ツール</h3>
+                    <p class="card-description">
+                        X (Twitter) のデータ分析。バズるコツがわかる。
+                    </p>
+                    <a href="#" class="card-link">
+                        近日公開 →
+                    </a>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <a href="#contact" class="btn btn-primary">
+                    🔧 カスタム武器を依頼する
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         LATEST SECTION (最新情報)
+         ============================================ -->
+    <section class="latest" id="latest">
+        <div class="container">
+            <div class="section-header">
+                <h2>📢 最新情報</h2>
+                <p class="section-subtitle">
+                    AI活用術、SNS運用の裏技を毎日ドロップ中
+                </p>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <div class="card-icon">📰</div>
+                    <h3 class="card-title">note</h3>
+                    <p class="card-description">
+                        AI活用術、ツールの使い方、稼ぎ方のノウハウを発信中。
+                    </p>
+                    <a href="https://note.com/" target="_blank" class="card-link">
+                        記事を読む →
+                    </a>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">🎥</div>
+                    <h3 class="card-title">YouTube</h3>
+                    <p class="card-description">
+                        ツールの使い方を動画で解説。チャンネル登録よろしく！
+                    </p>
+                    <a href="https://youtube.com/" target="_blank" class="card-link">
+                        動画を見る →
+                    </a>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">𝕏</div>
+                    <h3 class="card-title">X (Twitter)</h3>
+                    <p class="card-description">
+                        日々の攻略情報、新武器のリリース情報をリアルタイムで配信。
+                    </p>
+                    <a href="https://twitter.com/" target="_blank" class="card-link">
+                        フォローする →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         SUBSCRIBE SECTION (サブスク入会)
+         ============================================ -->
+    <section class="subscribe" id="subscribe">
+        <div class="container">
+            <div class="section-header">
+                <h2>👑 プレミアム会員</h2>
+                <p class="section-subtitle">
+                    限定武器、優先サポート、特別コンテンツへアクセス
+                </p>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <div class="card-icon">🆓</div>
+                    <h3 class="card-title">無料プラン</h3>
+                    <p class="card-description">
+                        ✅ 基本ツール使い放題<br>
+                        ✅ note記事閲覧<br>
+                        ✅ コミュニティ参加
+                    </p>
+                    <div class="stat-number">¥0</div>
+                    <a href="#contact" class="btn btn-secondary">
+                        今すぐ始める
+                    </a>
+                </div>
+                
+                <div class="card" style="border-color: var(--primary-gold); transform: scale(1.05);">
+                    <div class="tool-badge new">人気</div>
+                    <div class="card-icon">⭐</div>
+                    <h3 class="card-title">プレミアム</h3>
+                    <p class="card-description">
+                        ✅ すべてのツール使い放題<br>
+                        ✅ 限定コンテンツ<br>
+                        ✅ 優先サポート<br>
+                        ✅ カスタム依頼割引
+                    </p>
+                    <div class="stat-number">¥980<span style="font-size: 1rem;">/月</span></div>
+                    <a href="#contact" class="btn btn-primary">
+                        プレミアム会員になる
+                    </a>
+                </div>
+                
+                <div class="card">
+                    <div class="card-icon">💎</div>
+                    <h3 class="card-title">企業プラン</h3>
+                    <p class="card-description">
+                        ✅ カスタム開発<br>
+                        ✅ 専属サポート<br>
+                        ✅ API提供<br>
+                        ✅ ホワイトレーベル
+                    </p>
+                    <div class="stat-number">応相談</div>
+                    <a href="#contact" class="btn btn-secondary">
+                        お問い合わせ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         CONTACT SECTION (依頼・意見ボックス)
+         ============================================ -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2>📬 ご依頼・ご意見</h2>
+                <p class="section-subtitle">
+                    ツール開発の依頼、企業案件、ご意見・ご質問など、お気軽にどうぞ
+                </p>
+            </div>
+            
+            <form class="contact-form" id="contactForm">
+                <div class="form-group">
+                    <label for="name">お名前 *</label>
+                    <input type="text" id="name" name="name" required placeholder="山田太郎">
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">メールアドレス *</label>
+                    <input type="email" id="email" name="email" required placeholder="example@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">お問い合わせ内容 *</label>
+                    <select id="category" name="category" required>
+                        <option value="">選択してください</option>
+                        <option value="tool">ツール開発依頼</option>
+                        <option value="corporate">企業案件</option>
+                        <option value="support">サポート・質問</option>
+                        <option value="feedback">ご意見・ご感想</option>
+                        <option value="other">その他</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">メッセージ *</label>
+                    <textarea id="message" name="message" required placeholder="お問い合わせ内容を詳しくお書きください"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    📤 送信する
+                </button>
+            </form>
+            
+            <div class="text-center mt-5">
+                <h3 style="color: var(--accent-blue); margin-bottom: var(--spacing-md);">
+                    📱 公式LINEでもお問い合わせ可能
+                </h3>
+                <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md);">
+                    LINEなら24時間AIが自動応答。即レスでサポートします。
+                </p>
+                <a href="https://line.me/R/ti/p/" target="_blank" class="btn btn-primary">
+                    💬 公式LINEを追加
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         AD SECTION (広告スペース)
+         ============================================ -->
+    <section class="ads" style="background: var(--card-bg); padding: var(--spacing-xl) 0;">
+        <div class="container">
+            <div class="text-center">
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--spacing-sm);">
+                    SPONSORED
+                </p>
+                <div style="background: var(--glass-bg); border: 2px dashed var(--border-glow); border-radius: var(--radius-md); padding: var(--spacing-xl); min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                    <p style="color: var(--text-secondary); font-size: 1.1rem;">
+                        🎯 広告スペース<br>
+                        <span style="font-size: 0.9rem;">提携・広告のご相談は<a href="#contact">こちら</a></span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+         FOOTER
+         ============================================ -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>AI WEAPON SHOP</h3>
+                    <p style="color: var(--text-secondary);">
+                        人生という無理ゲーをAIで攻略。<br>
+                        最強の武器を授ける装備屋。
+                    </p>
+                    <div class="social-links mt-3">
+                        <a href="https://twitter.com/" target="_blank" class="social-link" title="X (Twitter)">𝕏</a>
+                        <a href="https://youtube.com/" target="_blank" class="social-link" title="YouTube">▶</a>
+                        <a href="https://note.com/" target="_blank" class="social-link" title="note">📝</a>
+                        <a href="https://line.me/R/ti/p/" target="_blank" class="social-link" title="LINE">💬</a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>リンク</h3>
+                    <ul>
+                        <li><a href="#home">ホーム</a></li>
+                        <li><a href="#weapons">武器庫</a></li>
+                        <li><a href="#latest">最新情報</a></li>
+                        <li><a href="#subscribe">サブスク</a></li>
+                        <li><a href="#contact">お問い合わせ</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>コンテンツ</h3>
+                    <ul>
+                        <li><a href="https://wagachanminigame.github.io/gifmojo-ai/" target="_blank">🎬 GifMojo AI</a></li>
+                        <li><a href="#weapons">⚔️ 全ツール一覧</a></li>
+                        <li><a href="#latest">📰 note記事</a></li>
+                        <li><a href="#latest">🎥 YouTube動画</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>サポート</h3>
+                    <ul>
+                        <li><a href="#contact">📬 お問い合わせ</a></li>
+                        <li><a href="https://line.me/R/ti/p/" target="_blank">💬 LINE サポート</a></li>
+                        <li><a href="#subscribe">👑 プレミアム会員</a></li>
+                        <li><a href="#contact">🔧 カスタム依頼</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 AI TOOL WEAPON SHOP. All rights reserved. | Powered by AI & ❤️</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================
+         JAVASCRIPT
+         ============================================ -->
+    <script src="script.js"></script>
+</body>
+</html>
