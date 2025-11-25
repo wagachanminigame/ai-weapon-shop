@@ -145,7 +145,7 @@ function initContactForm() {
         
         // ボタンを無効化
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '📤 送信中...';
+        submitBtn.innerHTML = '送信中...';
         
         // フォームデータを取得
         const formData = {
@@ -163,7 +163,7 @@ function initContactForm() {
         
         // 送信完了メッセージ
         setTimeout(() => {
-            alert('✅ お問い合わせありがとうございます！\n\n内容を確認次第、ご連絡させていただきます。\n\n緊急の場合は公式LINEからもお問い合わせいただけます。');
+            alert('お問い合わせありがとうございます！\n\n内容を確認次第、ご連絡させていただきます。\n\n緊急の場合は公式LINEからもお問い合わせいただけます。');
             form.reset();
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText;
@@ -379,7 +379,7 @@ function activateGodMode() {
     document.head.appendChild(style);
     
     // メッセージ表示
-    alert('🎉 GOD MODE ACTIVATED! 🎉\n\nあなたは真の冒険者です！\nLv.99達成おめでとうございます！');
+    alert('GOD MODE ACTIVATED!\n\nあなたは真の訪問者です！\nLv.99達成おめでとうございます！');
     
     // プレミアム機能解放（デモ）
     localStorage.setItem('aiWeaponShop_godMode', 'true');
@@ -448,6 +448,125 @@ function initScrollToTop() {
 }
 
 // ============================================
+// THEME COLOR TOGGLE
+// ============================================
+function initThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    if (!themeToggle) return;
+    
+    const themes = [
+        { name: 'gold', primary: '#FFD700', secondary: '#FFA500', accent: '#00D4FF' },
+        { name: 'blue', primary: '#00D4FF', secondary: '#0088FF', accent: '#9D4EDD' },
+        { name: 'purple', primary: '#9D4EDD', secondary: '#7209B7', accent: '#FF006E' },
+        { name: 'green', primary: '#00FF88', secondary: '#00CC6A', accent: '#FFD700' },
+        { name: 'red', primary: '#FF3366', secondary: '#FF0044', accent: '#FFD700' }
+    ];
+    
+    let currentThemeIndex = parseInt(localStorage.getItem('aiWeaponShop_theme') || '0');
+    
+    function applyTheme(index) {
+        const theme = themes[index];
+        document.documentElement.style.setProperty('--primary-gold', theme.primary);
+        document.documentElement.style.setProperty('--secondary-gold', theme.secondary);
+        document.documentElement.style.setProperty('--accent-blue', theme.accent);
+        
+        // ボタンの色を更新
+        themeToggle.style.borderColor = theme.primary;
+        const before = themeToggle.querySelector('::before');
+        if (before) {
+            before.style.background = theme.primary;
+        }
+    }
+    
+    // 初期テーマを適用
+    applyTheme(currentThemeIndex);
+    
+    // クリックでテーマ切り替え
+    themeToggle.addEventListener('click', () => {
+        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+        applyTheme(currentThemeIndex);
+        localStorage.setItem('aiWeaponShop_theme', currentThemeIndex.toString());
+        
+        // フィードバック
+        themeToggle.style.transform = 'scale(1.2)';
+        setTimeout(() => {
+            themeToggle.style.transform = 'scale(1)';
+        }, 200);
+    });
+}
+
+// ============================================
+// LATEST POSTS (X / note)
+// ============================================
+function initLatestPosts() {
+    // X (Twitter) の最新ポスト（プレースホルダー）
+    const twitterPosts = [
+        {
+            date: '2025-11-25',
+            title: 'GifMojo AI リリース！',
+            excerpt: '動画から一瞬でGIF生成できるツールを公開しました。フレーム分割・編集も簡単です。',
+            url: 'https://x.com/wagachanmini'
+        },
+        {
+            date: '2025-11-24',
+            title: 'AI活用術 #1',
+            excerpt: 'AIツールを使って業務効率を10倍にする方法。無料で使えるツールを紹介中。',
+            url: 'https://x.com/wagachanmini'
+        },
+        {
+            date: '2025-11-23',
+            title: 'SNS運用の裏技',
+            excerpt: 'バズるコツを大公開。エンゲージメント率を上げるポイントとは？',
+            url: 'https://x.com/wagachanmini'
+        }
+    ];
+    
+    // note の最新記事（プレースホルダー）
+    const notePosts = [
+        {
+            date: '2025-11-25',
+            title: 'AI WEAPON SHOP の始め方',
+            excerpt: 'このサイトで提供している無料AIツールの使い方を徹底解説します。',
+            url: 'https://note.com/wagachanmimi/portal'
+        },
+        {
+            date: '2025-11-24',
+            title: 'GifMojo AI 完全ガイド',
+            excerpt: '動画からGIFを作成する方法を画像付きで詳しく説明します。',
+            url: 'https://note.com/wagachanmimi/portal'
+        },
+        {
+            date: '2025-11-23',
+            title: 'AI時代の稼ぎ方',
+            excerpt: 'AIツールを使った副業の始め方。月5万円稼ぐロードマップ。',
+            url: 'https://note.com/wagachanmimi/portal'
+        }
+    ];
+    
+    const twitterContainer = document.getElementById('twitterPosts');
+    const noteContainer = document.getElementById('notePosts');
+    
+    if (twitterContainer) {
+        renderPosts(twitterPosts, twitterContainer);
+    }
+    
+    if (noteContainer) {
+        renderPosts(notePosts, noteContainer);
+    }
+}
+
+function renderPosts(posts, container) {
+    container.innerHTML = posts.map(post => `
+        <div class="post-card" onclick="window.open('${post.url}', '_blank')">
+            <div class="post-date">${post.date}</div>
+            <h4 class="post-title">${post.title}</h4>
+            <p class="post-excerpt">${post.excerpt}</p>
+            <span class="post-link">続きを読む →</span>
+        </div>
+    `).join('');
+}
+
+// ============================================
 // INITIALIZE ALL
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
@@ -464,6 +583,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initToolTracking();
     initEasterEgg();
     initScrollToTop();
+    initThemeToggle();
+    initLatestPosts();
     
     // パーティクルエフェクト（パフォーマンスに影響する場合はコメントアウト）
     // initParticles();
@@ -472,7 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isFirstVisit = !localStorage.getItem('aiWeaponShop_visited');
     if (isFirstVisit) {
         setTimeout(() => {
-            const welcome = confirm('⚔️ AI WEAPON SHOP へようこそ！\n\n人生という無理ゲーを一緒に攻略しましょう！\n\n最強装備を受け取りますか？');
+            const welcome = confirm('AI WEAPON SHOP へようこそ！\n\n人生という無理ゲーを一緒に攻略しましょう！\n\n最強装備を受け取りますか？');
             if (welcome) {
                 document.querySelector('#weapons').scrollIntoView({ behavior: 'smooth' });
             }
@@ -495,7 +616,7 @@ document.addEventListener('visibilitychange', () => {
 // ============================================
 // CONSOLE MESSAGE
 // ============================================
-console.log('%c⚔️ AI WEAPON SHOP', 'font-size: 24px; font-weight: bold; color: #FFD700;');
+console.log('%cAI WEAPON SHOP', 'font-size: 24px; font-weight: bold; color: #FFD700;');
 console.log('%c人生という無理ゲーをAIで攻略中', 'font-size: 14px; color: #00D4FF;');
 console.log('%cGitHub: https://github.com/wagachanminigame', 'font-size: 12px; color: #9D4EDD;');
 console.log('%c\n隠しコマンド: ↑↑↓↓←→←→BA', 'font-size: 10px; color: #666;');
