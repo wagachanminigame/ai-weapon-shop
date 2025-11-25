@@ -496,77 +496,6 @@ function initThemeToggle() {
 }
 
 // ============================================
-// LATEST POSTS (X / note)
-// ============================================
-function initLatestPosts() {
-    // X (Twitter) の最新ポスト（プレースホルダー）
-    const twitterPosts = [
-        {
-            date: '2025-11-25',
-            title: 'GifMojo AI リリース！',
-            excerpt: '動画から一瞬でGIF生成できるツールを公開しました。フレーム分割・編集も簡単です。',
-            url: 'https://x.com/wagachanmini'
-        },
-        {
-            date: '2025-11-24',
-            title: 'AI活用術 #1',
-            excerpt: 'AIツールを使って業務効率を10倍にする方法。無料で使えるツールを紹介中。',
-            url: 'https://x.com/wagachanmini'
-        },
-        {
-            date: '2025-11-23',
-            title: 'SNS運用の裏技',
-            excerpt: 'バズるコツを大公開。エンゲージメント率を上げるポイントとは？',
-            url: 'https://x.com/wagachanmini'
-        }
-    ];
-    
-    // note の最新記事（プレースホルダー）
-    const notePosts = [
-        {
-            date: '2025-11-25',
-            title: 'AI WEAPON SHOP の始め方',
-            excerpt: 'このサイトで提供している無料AIツールの使い方を徹底解説します。',
-            url: 'https://note.com/wagachanmimi/portal'
-        },
-        {
-            date: '2025-11-24',
-            title: 'GifMojo AI 完全ガイド',
-            excerpt: '動画からGIFを作成する方法を画像付きで詳しく説明します。',
-            url: 'https://note.com/wagachanmimi/portal'
-        },
-        {
-            date: '2025-11-23',
-            title: 'AI時代の稼ぎ方',
-            excerpt: 'AIツールを使った副業の始め方。月5万円稼ぐロードマップ。',
-            url: 'https://note.com/wagachanmimi/portal'
-        }
-    ];
-    
-    const twitterContainer = document.getElementById('twitterPosts');
-    const noteContainer = document.getElementById('notePosts');
-    
-    if (twitterContainer) {
-        renderPosts(twitterPosts, twitterContainer);
-    }
-    
-    if (noteContainer) {
-        renderPosts(notePosts, noteContainer);
-    }
-}
-
-function renderPosts(posts, container) {
-    container.innerHTML = posts.map(post => `
-        <div class="post-card" onclick="window.open('${post.url}', '_blank')">
-            <div class="post-date">${post.date}</div>
-            <h4 class="post-title">${post.title}</h4>
-            <p class="post-excerpt">${post.excerpt}</p>
-            <span class="post-link">続きを読む →</span>
-        </div>
-    `).join('');
-}
-
-// ============================================
 // INITIALIZE ALL
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
@@ -584,7 +513,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initEasterEgg();
     initScrollToTop();
     initThemeToggle();
-    initLatestPosts();
     
     // パーティクルエフェクト（パフォーマンスに影響する場合はコメントアウト）
     // initParticles();
