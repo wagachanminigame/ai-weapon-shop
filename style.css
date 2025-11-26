@@ -608,6 +608,67 @@ nav {
 }
 
 /* ============================================
+   SNS SECTION
+   ============================================ */
+
+.sns-section {
+  background: linear-gradient(135deg, rgba(157, 78, 221, 0.05) 0%, rgba(0, 212, 255, 0.05) 100%);
+  position: relative;
+}
+
+.sns-card {
+  text-align: center;
+  transition: all 0.4s ease;
+}
+
+.sns-card .card-icon {
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--spacing-md);
+  animation: float 3s ease-in-out infinite;
+}
+
+.sns-card:hover {
+  transform: translateY(-15px) scale(1.02);
+}
+
+.sns-card .btn {
+  margin-top: var(--spacing-md);
+  font-size: 1rem;
+}
+
+.sns-card:nth-child(1) .card-icon {
+  background: linear-gradient(135deg, #1DA1F2, #0d8bd9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sns-card:nth-child(2) .card-icon {
+  background: linear-gradient(135deg, #FF0000, #cc0000);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sns-card:nth-child(3) .card-icon {
+  background: linear-gradient(135deg, #41C9B4, #2ea893);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sns-card:nth-child(4) .card-icon {
+  background: linear-gradient(135deg, #00B900, #009900);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+
+/* ============================================
    CONTACT FORM
    ============================================ */
 
