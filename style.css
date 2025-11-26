@@ -647,7 +647,7 @@ nav {
 }
 
 .sns-card:nth-child(2) .card-icon {
-  background: linear-gradient(135deg, #FF0000, #cc0000);
+  background: linear-gradient(135deg, #FF0000, #CC0000);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -662,6 +662,20 @@ nav {
 
 .sns-card:nth-child(4) .card-icon {
   background: linear-gradient(135deg, #00B900, #009900);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sns-card:nth-child(5) .card-icon {
+  background: linear-gradient(135deg, #000000, #333333);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sns-card:nth-child(6) .card-icon {
+  background: linear-gradient(135deg, #E1306C, #FD1D1D, #F77737);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
