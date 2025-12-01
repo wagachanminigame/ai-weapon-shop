@@ -148,12 +148,15 @@ function initStatsCounter() {
 }
 
 // ============================================
-// CONTACT FORM HANDLING
+// CONTACT FORM - Google Apps Script連携
 // ============================================
 function initContactForm() {
     const form = document.getElementById('contactForm');
     
     if (!form) return;
+    
+    // Google Apps Script Web App URL
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxhlyzgal46WQGrEc_kbWVRT5Ix62FOmPl8Cfsj7YyvLx12DQlrJnjdg3LcDA7RJfs4/exec';
     
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -163,7 +166,7 @@ function initContactForm() {
         
         // ボタンを無効化
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '送信中...';
+        submitBtn.innerHTML = '⏳ 送信中...';
         
         // フォームデータを取得
         const formData = {
@@ -174,18 +177,30 @@ function initContactForm() {
             timestamp: new Date().toISOString()
         };
         
-        // LocalStorageに保存（実際の実装では、サーバーに送信）
-        const submissions = JSON.parse(localStorage.getItem('aiWeaponShop_submissions') || '[]');
-        submissions.push(formData);
-        localStorage.setItem('aiWeaponShop_submissions', JSON.stringify(submissions));
-        
-        // 送信完了メッセージ
-        setTimeout(() => {
-            alert('お問い合わせありがとうございます！\n\n内容を確認次第、ご連絡させていただきます。\n\n緊急の場合は公式LINEからもお問い合わせいただけます。');
+        try {
+            // Google Apps Scriptにデータを送信
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors', // CORSを回避
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            // 送信成功
+            alert('✅ お問い合わせありがとうございます！\n\n内容を確認次第、ご連絡させていただきます。\n\n緊急の場合は公式LINEからもお問い合わせいただけます。');
             form.reset();
+            
+            console.log('📧 お問い合わせ送信完了:', formData.name);
+            
+        } catch (error) {
+            console.error('送信エラー:', error);
+            alert('❌ 送信に失敗しました。\n\nお手数ですが、公式LINEからお問い合わせください。');
+        } finally {
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText;
-        }, 1500);
+        }
         
         // Google Analytics イベント送信（実装されている場合）
         if (typeof gtag !== 'undefined') {
