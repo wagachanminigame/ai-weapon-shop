@@ -8,47 +8,40 @@
 async function initVisitorCounter() {
     const counterElement = document.getElementById('visitorCount');
     
-    // 一時的な表示
-    counterElement.textContent = '...';
+    if (!counterElement) return;
     
-    try {
-        // ユニーク訪問者かチェック（LocalStorageで判定）
-        const hasVisited = localStorage.getItem('aiWeaponShop_hasVisited');
-        
-        // CountAPI.xyz を使用して訪問者数を取得・カウント
-        const namespace = 'wagachanminigame';
-        const key = 'ai-weapon-shop-visitors';
-        
-        let response;
-        if (!hasVisited) {
-            // 初回訪問の場合、カウントアップ
-            response = await fetch(`https://api.countapi.xyz/hit/${namespace}/${key}`);
-            localStorage.setItem('aiWeaponShop_hasVisited', 'true');
-        } else {
-            // 再訪問の場合、現在のカウントのみ取得
-            response = await fetch(`https://api.countapi.xyz/get/${namespace}/${key}`);
+    // 初期表示
+    counterElement.textContent = '---';
+    
+    // LocalStorageベースのカウンター
+    // グローバルカウント用のキー（全訪問者で共有したい場合はサーバーサイドが必要）
+    const storageKey = 'aiWeaponShop_visitorData_v2';
+    const globalStartCount = 1; // 初期値を1から開始
+    
+    let visitorData = JSON.parse(localStorage.getItem(storageKey) || 'null');
+    
+    if (!visitorData) {
+        // 初回訪問者：新規カウント開始
+        visitorData = {
+            count: globalStartCount,
+            isFirstVisit: true,
+            visitCount: 1,
+            lastVisit: new Date().toDateString()
+        };
+        localStorage.setItem(storageKey, JSON.stringify(visitorData));
+    } else {
+        // リピーター：訪問回数を増やす
+        const today = new Date().toDateString();
+        if (visitorData.lastVisit !== today) {
+            visitorData.visitCount = (visitorData.visitCount || 0) + 1;
+            visitorData.lastVisit = today;
+            localStorage.setItem(storageKey, JSON.stringify(visitorData));
         }
-        
-        if (response.ok) {
-            const data = await response.json();
-            const visitorCount = data.value || 1;
-            
-            // カウントアップアニメーション
-            animateCounter(counterElement, 0, visitorCount, 2000);
-        } else {
-            // APIエラーの場合、フォールバック
-            throw new Error('API Error');
-        }
-    } catch (error) {
-        console.error('Visitor counter error:', error);
-        
-        // エラー時のフォールバック（LocalStorageベース）
-        let localCount = parseInt(localStorage.getItem('aiWeaponShop_localVisitors') || '0');
-        localCount++;
-        localStorage.setItem('aiWeaponShop_localVisitors', localCount.toString());
-        
-        counterElement.textContent = localCount.toLocaleString('ja-JP');
     }
+    
+    // 表示するカウント（個人の訪問回数ではなく、その人が何番目の訪問者かを表示）
+    const targetCount = visitorData.count;
+    animateCounter(counterElement, 0, targetCount, 1500);
 }
 
 // カウントアップアニメーション
@@ -488,6 +481,7 @@ function initThemeToggle() {
     ];
     
     let currentThemeIndex = parseInt(localStorage.getItem('aiWeaponShop_theme') || '0');
+    let triedThemes = new Set(JSON.parse(localStorage.getItem('aiWeaponShop_triedThemes') || '[]'));
     
     function applyTheme(index) {
         const theme = themes[index];
@@ -503,8 +497,9 @@ function initThemeToggle() {
         }
     }
     
-    // 初期テーマを適用
+    // 初期テーマを適用し、記録に追加
     applyTheme(currentThemeIndex);
+    triedThemes.add(currentThemeIndex);
     
     // クリックでテーマ切り替え
     themeToggle.addEventListener('click', () => {
@@ -512,11 +507,551 @@ function initThemeToggle() {
         applyTheme(currentThemeIndex);
         localStorage.setItem('aiWeaponShop_theme', currentThemeIndex.toString());
         
-        // フィードバック
+        // 試したテーマを記録
+        triedThemes.add(currentThemeIndex);
+        localStorage.setItem('aiWeaponShop_triedThemes', JSON.stringify([...triedThemes]));
+        
+        // フィードバック＆進捗表示
         themeToggle.style.transform = 'scale(1.2)';
+        console.log(`🎨 テーマ変更: ${themes[currentThemeIndex].name} (${triedThemes.size}/${themes.length})`);
         setTimeout(() => {
             themeToggle.style.transform = 'scale(1)';
         }, 200);
+        
+        // 全色試したら裏ステージへ！
+        if (triedThemes.size >= themes.length) {
+            console.log('🎮 全色コンプリート！裏ステージ解放！');
+            setTimeout(() => {
+                startSecretMiniGame();
+            }, 500);
+            // リセット
+            triedThemes.clear();
+            localStorage.setItem('aiWeaponShop_triedThemes', '[]');
+        }
+    });
+}
+
+// グローバルでミニゲームをテスト起動できるように
+window.testMiniGame = function() {
+    console.log('🎮 テストモードでミニゲーム起動！');
+    startSecretMiniGame();
+};
+
+// ============================================
+// SECRET MINI GAME - キャラクターキャッチゲーム
+// ============================================
+function startSecretMiniGame() {
+    // ゲーム画面を作成
+    const gameOverlay = document.createElement('div');
+    gameOverlay.id = 'secretMiniGame';
+    gameOverlay.innerHTML = `
+        <div class="game-container">
+            <button class="game-close-btn">×</button>
+            <div class="game-header">
+                <h2>🎮 裏ステージ 🎮</h2>
+                <p>赤いパンツで店主をキャッチ！</p>
+                <div class="game-stats">
+                    <span class="game-score">キャッチ: <span id="catchCount">0</span>/10</span>
+                    <span class="game-lives">❤️ <span id="livesCount">3</span></span>
+                </div>
+            </div>
+            <div class="game-area" id="gameArea">
+                <div class="catcher" id="catcher">
+                    <div class="pants-catcher"></div>
+                </div>
+            </div>
+            <div class="game-message" id="gameMessage"></div>
+        </div>
+    `;
+    
+    // スタイルを追加
+    const gameStyles = document.createElement('style');
+    gameStyles.textContent = `
+        #secretMiniGame {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .game-container {
+            width: 90%;
+            max-width: 500px;
+            height: 80vh;
+            max-height: 700px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            border: 4px solid #FFD700;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+        }
+        
+        .game-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            background: #FF3366;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .game-close-btn:hover {
+            background: #FF0044;
+            transform: scale(1.1);
+        }
+        
+        .game-header {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(157, 78, 221, 0.2) 100%);
+            border-bottom: 2px solid #FFD700;
+        }
+        
+        .game-header h2 {
+            color: #FFD700;
+            margin: 0;
+            font-size: 1.5rem;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .game-header p {
+            color: #fff;
+            margin: 5px 0 0;
+            font-size: 0.9rem;
+        }
+        
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+            color: #fff;
+            font-size: 1rem;
+        }
+        
+        .game-score {
+            color: #00FF88;
+        }
+        
+        .game-lives {
+            color: #FF3366;
+        }
+        
+        .game-area {
+            position: relative;
+            width: 100%;
+            height: calc(100% - 120px);
+            background: 
+                radial-gradient(circle at 30% 70%, rgba(157, 78, 221, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
+            cursor: none;
+        }
+        
+        .catcher {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: left 0.05s ease-out;
+            user-select: none;
+        }
+        
+        .pants-catcher {
+            width: 100px;
+            height: 40px;
+            background: linear-gradient(180deg, #CC2233 0%, #FF3344 50%, #CC2233 100%);
+            border: 3px solid #AA1122;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 
+                0 5px 15px rgba(255, 51, 102, 0.5),
+                inset 0 -5px 10px rgba(0,0,0,0.3),
+                inset 0 5px 10px rgba(255,255,255,0.2);
+            position: relative;
+        }
+        
+        .pants-catcher::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: 15px;
+            background: linear-gradient(180deg, #8B4513 0%, #654321 100%);
+            border: 2px solid #5C3A21;
+            border-radius: 3px;
+        }
+        
+        .falling-character {
+            position: absolute;
+            animation: fall linear forwards;
+            user-select: none;
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+        }
+        
+        .falling-character img {
+            width: 70px;
+            height: auto;
+            image-rendering: pixelated;
+        }
+        
+        @keyframes fall {
+            0% {
+                top: -100px;
+                transform: rotate(0deg) scale(1);
+            }
+            25% {
+                transform: rotate(15deg) scale(1.05);
+            }
+            50% {
+                transform: rotate(-15deg) scale(1);
+            }
+            75% {
+                transform: rotate(10deg) scale(1.05);
+            }
+            100% {
+                top: calc(100% + 100px);
+                transform: rotate(-5deg) scale(1);
+            }
+        }
+        
+        .catch-effect {
+            position: absolute;
+            font-size: 30px;
+            animation: catchPop 0.5s ease-out forwards;
+            pointer-events: none;
+        }
+        
+        @keyframes catchPop {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2) translateY(-30px);
+                opacity: 0;
+            }
+        }
+        
+        .game-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #FFD700;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            z-index: 50;
+            display: none;
+        }
+        
+        .game-message.show {
+            display: block;
+            animation: messageAppear 0.5s ease;
+        }
+        
+        @keyframes messageAppear {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        
+        .game-message button {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 30px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border: none;
+            border-radius: 25px;
+            color: #1a1a2e;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .game-message button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+    `;
+    
+    document.head.appendChild(gameStyles);
+    document.body.appendChild(gameOverlay);
+    
+    // ゲーム変数
+    let catchCount = 0;
+    let lives = 3;
+    let gameRunning = true;
+    let spawnInterval;
+    let useImages = true; // 画像を使用するか
+    
+    // キャラクター画像のポーズ (images/game/ フォルダに保存)
+    const characterImages = [
+        'images/game/pose1.png',
+        'images/game/pose2.png',
+        'images/game/pose3.png',
+        'images/game/pose4.png',
+        'images/game/pose5.png',
+        'images/game/pose6.png',
+        'images/game/pose7.png',
+        'images/game/pose8.png',
+        'images/game/pose9.png',
+        'images/game/pose10.png'
+    ];
+    
+    // フォールバック用絵文字
+    const characterEmojis = ['🧍', '🏃', '🤸', '💃', '🕺', '🧘', '🙆', '🙋', '🤷', '🙅'];
+    
+    // 要素を取得
+    const gameArea = document.getElementById('gameArea');
+    const catcher = document.getElementById('catcher');
+    const catchCountEl = document.getElementById('catchCount');
+    const livesCountEl = document.getElementById('livesCount');
+    const gameMessage = document.getElementById('gameMessage');
+    const closeBtn = gameOverlay.querySelector('.game-close-btn');
+    
+    // キャッチャーをマウス/タッチで移動
+    function moveCatcher(clientX) {
+        const rect = gameArea.getBoundingClientRect();
+        let x = clientX - rect.left;
+        x = Math.max(60, Math.min(rect.width - 60, x));
+        catcher.style.left = x + 'px';
+    }
+    
+    gameArea.addEventListener('mousemove', (e) => {
+        if (gameRunning) moveCatcher(e.clientX);
+    });
+    
+    gameArea.addEventListener('touchmove', (e) => {
+        if (gameRunning) {
+            e.preventDefault();
+            moveCatcher(e.touches[0].clientX);
+        }
+    }, { passive: false });
+    
+    // キャラクターを落とす
+    function spawnCharacter() {
+        if (!gameRunning) return;
+        
+        const character = document.createElement('div');
+        character.className = 'falling-character';
+        
+        if (useImages) {
+            // 画像を使用
+            const img = document.createElement('img');
+            const randomIndex = Math.floor(Math.random() * characterImages.length);
+            img.src = characterImages[randomIndex];
+            img.alt = '店主';
+            img.onerror = function() {
+                // 画像が読み込めない場合はemoji代替
+                useImages = false; // 以降は絵文字のみ
+                character.innerHTML = characterEmojis[randomIndex % characterEmojis.length];
+                character.style.fontSize = '50px';
+            };
+            character.appendChild(img);
+        } else {
+            // 絵文字を使用
+            character.textContent = characterEmojis[Math.floor(Math.random() * characterEmojis.length)];
+            character.style.fontSize = '50px';
+        }
+        
+        const x = Math.random() * (gameArea.clientWidth - 80) + 40;
+        character.style.left = x + 'px';
+        
+        const duration = 2.5 + Math.random() * 2; // 2.5-4.5秒
+        character.style.animationDuration = duration + 's';
+        
+        gameArea.appendChild(character);
+        
+        // 当たり判定チェック
+        const checkCollision = setInterval(() => {
+            if (!gameRunning) {
+                clearInterval(checkCollision);
+                return;
+            }
+            
+            const charRect = character.getBoundingClientRect();
+            const catcherRect = catcher.getBoundingClientRect();
+            
+            // キャッチ判定
+            if (charRect.bottom > catcherRect.top &&
+                charRect.bottom < catcherRect.bottom + 30 &&
+                charRect.left < catcherRect.right &&
+                charRect.right > catcherRect.left) {
+                
+                clearInterval(checkCollision);
+                character.remove();
+                catchCount++;
+                catchCountEl.textContent = catchCount;
+                
+                // キャッチエフェクト
+                const effect = document.createElement('div');
+                effect.className = 'catch-effect';
+                effect.textContent = '✨';
+                effect.style.left = charRect.left - gameArea.getBoundingClientRect().left + 'px';
+                effect.style.top = catcherRect.top - gameArea.getBoundingClientRect().top + 'px';
+                gameArea.appendChild(effect);
+                setTimeout(() => effect.remove(), 500);
+                
+                // クリア判定
+                if (catchCount >= 10) {
+                    gameWin();
+                }
+            }
+            
+            // ミス判定（画面外に落ちた）
+            if (charRect.top > gameArea.getBoundingClientRect().bottom) {
+                clearInterval(checkCollision);
+                character.remove();
+                lives--;
+                livesCountEl.textContent = lives;
+                
+                // ミスエフェクト
+                catcher.style.filter = 'drop-shadow(0 0 20px red)';
+                setTimeout(() => {
+                    catcher.style.filter = 'drop-shadow(0 0 10px rgba(255, 51, 102, 0.8))';
+                }, 300);
+                
+                if (lives <= 0) {
+                    gameOver();
+                }
+            }
+        }, 50);
+        
+        // アニメーション終了時に削除
+        character.addEventListener('animationend', () => {
+            clearInterval(checkCollision);
+            character.remove();
+        });
+    }
+    
+    // ゲームクリア
+    function gameWin() {
+        gameRunning = false;
+        clearInterval(spawnInterval);
+        
+        gameMessage.innerHTML = `
+            <div style="font-size: 2.5rem;">🎊 CLEAR! 🎊</div>
+            <div style="font-size: 1.2rem; margin-top: 15px; color: #00FF88;">店主を全員キャッチ！</div>
+            <div style="font-size: 0.9rem; margin-top: 10px; color: #FFD700;">🏆 裏ボス撃破 🏆</div>
+            <button onclick="document.getElementById('secretMiniGame').remove()">HPに戻る</button>
+        `;
+        gameMessage.classList.add('show');
+        
+        // 紙吹雪エフェクト
+        for (let i = 0; i < 50; i++) {
+            setTimeout(() => {
+                const confetti = document.createElement('div');
+                confetti.textContent = ['🎉', '✨', '🌟', '💫', '🎊', '⭐'][Math.floor(Math.random() * 6)];
+                confetti.style.cssText = `
+                    position: absolute;
+                    font-size: ${20 + Math.random() * 20}px;
+                    left: ${Math.random() * 100}%;
+                    top: -50px;
+                    animation: fall ${3 + Math.random() * 2}s linear forwards;
+                    pointer-events: none;
+                `;
+                gameArea.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 5000);
+            }, i * 80);
+        }
+    }
+    
+    // ゲームオーバー
+    function gameOver() {
+        gameRunning = false;
+        clearInterval(spawnInterval);
+        
+        gameMessage.innerHTML = `
+            <div style="font-size: 2rem; color: #FF3366;">💔 GAME OVER 💔</div>
+            <div style="font-size: 1rem; margin-top: 15px;">キャッチ数: ${catchCount}/10</div>
+            <div style="font-size: 0.8rem; margin-top: 5px; color: #888;">店主が逃げてしまった...</div>
+            <button onclick="location.reload()">リトライ</button>
+            <button onclick="document.getElementById('secretMiniGame').remove()" style="background: #666;">HPに戻る</button>
+        `;
+        gameMessage.classList.add('show');
+    }
+    
+    // 閉じるボタン
+    closeBtn.addEventListener('click', () => {
+        gameRunning = false;
+        clearInterval(spawnInterval);
+        gameOverlay.remove();
+        gameStyles.remove();
+    });
+    
+    // ゲーム開始
+    setTimeout(() => {
+        spawnInterval = setInterval(spawnCharacter, 800);
+    }, 1000);
+    
+    console.log('🎮 ミニゲーム開始！');
+}
+
+// ============================================
+// SHOPKEEPER SPEECH BUBBLE
+// ============================================
+function initShopkeeperBubble() {
+    const clickArea = document.getElementById('shopkeeperArea');
+    const bubble = document.getElementById('shopkeeperBubble');
+    
+    if (!clickArea || !bubble) return;
+    
+    // クリックで吹き出し表示/非表示
+    clickArea.addEventListener('click', () => {
+        bubble.classList.toggle('show');
+        
+        // 表示されたら効果音的なログ
+        if (bubble.classList.contains('show')) {
+            console.log('🗨️ 店主「いらっしゃい！」');
+        }
+    });
+    
+    // 吹き出し以外をクリックしたら閉じる
+    document.addEventListener('click', (e) => {
+        if (!clickArea.contains(e.target) && !bubble.contains(e.target)) {
+            bubble.classList.remove('show');
+        }
+    });
+    
+    // メッセージをランダムに変える（オプション）
+    const messages = [
+        { main: 'いらっしゃい！', sub: '今日も最強装備、揃ってるよ！' },
+        { main: 'よう、冒険者！', sub: '何かお探しかい？' },
+        { main: 'おっ、来たな！', sub: 'いいツールあるぜ！' },
+        { main: 'へいらっしゃい！', sub: '今日のオススメはGifMojoだ！' },
+    ];
+    
+    clickArea.addEventListener('click', () => {
+        const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+        const bubbleText = bubble.querySelector('.bubble-text');
+        const bubbleSubtext = bubble.querySelector('.bubble-subtext');
+        
+        if (bubbleText) bubbleText.textContent = randomMsg.main;
+        if (bubbleSubtext) bubbleSubtext.textContent = randomMsg.sub;
     });
 }
 
@@ -538,21 +1073,12 @@ document.addEventListener('DOMContentLoaded', () => {
     initEasterEgg();
     initScrollToTop();
     initThemeToggle();
+    initShopkeeperBubble();
     
     // パーティクルエフェクト（パフォーマンスに影響する場合はコメントアウト）
     // initParticles();
     
-    // ウェルカムメッセージ（初回訪問のみ）
-    const isFirstVisit = !localStorage.getItem('aiWeaponShop_visited');
-    if (isFirstVisit) {
-        setTimeout(() => {
-            const welcome = confirm('AI WEAPON SHOP へようこそ！\n\n人生という無理ゲーを一緒に攻略しましょう！\n\n最強装備を受け取りますか？');
-            if (welcome) {
-                document.querySelector('#weapons').scrollIntoView({ behavior: 'smooth' });
-            }
-            localStorage.setItem('aiWeaponShop_visited', 'true');
-        }, 2000);
-    }
+    // ウェルカムメッセージは削除（吹き出しに置き換え）
 });
 
 // ============================================

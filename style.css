@@ -295,18 +295,9 @@ nav {
 .hero-content {
   max-width: 900px;
   z-index: 2;
-}
-
-.hero-badge {
-  display: inline-block;
-  background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-  color: white;
-  padding: 0.5rem 1.5rem;
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  margin-bottom: var(--spacing-md);
-  animation: float 3s ease-in-out infinite;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 @keyframes float {
@@ -317,6 +308,7 @@ nav {
 .visitor-counter {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
@@ -324,15 +316,20 @@ nav {
   padding: 0.8rem 1.5rem;
   border-radius: 50px;
   margin: var(--spacing-md) 0;
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 700;
   box-shadow: var(--shadow-glow);
+  flex-wrap: wrap;
+  min-width: 280px;
 }
 
 .visitor-counter .count {
   color: var(--primary-gold);
   font-size: 1.5rem;
   font-family: var(--font-heading);
+  min-width: 60px;
+  text-align: center;
+  display: inline-block;
 }
 
 .hero-title {
@@ -366,17 +363,214 @@ nav {
 .hero-banner {
   width: 100%;
   max-width: 800px;
-  margin: var(--spacing-lg) auto;
+  margin: 0 auto var(--spacing-lg);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow: visible;
   box-shadow: var(--shadow-card);
   animation: scaleIn 1s ease-out;
+  border: 3px solid var(--border-glow);
+  position: relative;
 }
 
 .hero-banner img {
   width: 100%;
   height: auto;
   display: block;
+}
+
+/* ============================================
+   SHOPKEEPER CLICK AREA & SPEECH BUBBLE
+   ============================================ */
+
+/* 店主クリックエリア（透明なクリック領域） */
+.shopkeeper-click-area {
+  position: absolute;
+  bottom: 10%;
+  right: 5%;
+  width: 35%;
+  height: 70%;
+  cursor: pointer;
+  z-index: 5;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  /* デバッグ用（本番では削除）: background: rgba(255,0,0,0.2); */
+}
+
+.shopkeeper-click-area:hover {
+  /* ホバー時にわかりやすく */
+}
+
+.shopkeeper-click-area::after {
+  content: '👆';
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  font-size: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: bounceHint 2s ease-in-out infinite;
+}
+
+.shopkeeper-click-area:hover::after {
+  opacity: 1;
+}
+
+@keyframes bounceHint {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* 吹き出し（デフォルトは非表示） */
+.shopkeeper-bubble {
+  position: absolute;
+  top: 5px;
+  right: 30%;
+  background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+  color: #333;
+  padding: 0.7rem 1rem;
+  border-radius: 16px;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 0 30px rgba(255, 215, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  min-width: 150px;
+  max-width: 180px;
+  width: auto;
+  text-align: center;
+  z-index: 20;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.8) translateY(10px);
+  transition: all 0.4s ease;
+  border: 3px solid var(--primary-gold);
+  pointer-events: none;
+}
+
+/* 吹き出し表示状態 */
+.shopkeeper-bubble.show {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1) translateY(0);
+  animation: bubbleBounce 0.5s ease-out;
+}
+
+/* 吹き出しの尻尾（右向き - 人物の方を指す） */
+.shopkeeper-bubble::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -12px;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 15px solid #fff;
+}
+
+.shopkeeper-bubble::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -18px;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 13px solid transparent;
+  border-bottom: 13px solid transparent;
+  border-left: 20px solid var(--primary-gold);
+}
+
+.bubble-text {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent-purple);
+  font-family: var(--font-heading);
+  margin-bottom: 0.3rem;
+  line-height: 1.4;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+.bubble-subtext {
+  display: block;
+  font-size: 0.7rem;
+  color: #666;
+  line-height: 1.4;
+  margin-top: 0.2rem;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+@keyframes bubbleBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateX(20px);
+  }
+  50% {
+    transform: scale(1.1) translateX(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .shopkeeper-click-area {
+    width: 40%;
+    height: 60%;
+    right: 3%;
+  }
+  
+  .shopkeeper-bubble {
+    top: 5px;
+    right: 35%;
+    padding: 0.5rem 0.7rem;
+    max-width: 110px;
+  }
+  
+  .bubble-text {
+    font-size: 0.85rem;
+    word-break: keep-all;
+  }
+  
+  .bubble-subtext {
+    font-size: 0.6rem;
+    word-break: keep-all;
+  }
+  
+  .shopkeeper-click-area::after {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .shopkeeper-click-area {
+    width: 45%;
+    height: 55%;
+    right: 2%;
+  }
+  
+  .shopkeeper-bubble {
+    top: 3px;
+    right: 42%;
+    padding: 0.4rem 0.6rem;
+    max-width: 90px;
+  }
+  
+  .bubble-text {
+    font-size: 0.75rem;
+  }
+  
+  .bubble-subtext {
+    display: none;
+  }
 }
 
 @keyframes scaleIn {
@@ -605,6 +799,28 @@ nav {
 @keyframes pulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.1); }
+}
+
+/* Coming Soon Cards */
+.tool-card.coming-soon-card {
+  opacity: 0.7;
+  filter: grayscale(30%);
+}
+
+.tool-card.coming-soon-card:hover {
+  opacity: 0.85;
+  filter: grayscale(10%);
+}
+
+.tool-card.coming-soon-card .card-icon {
+  font-size: 2.5rem;
+  filter: blur(0px);
+}
+
+.card-link.disabled {
+  color: var(--text-secondary);
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 /* ============================================
@@ -919,6 +1135,42 @@ footer {
   
   .stats-grid {
     grid-template-columns: 1fr;
+  }
+  
+  /* Hero section mobile fixes */
+  .hero {
+    padding-top: 80px;
+  }
+  
+  .hero-banner {
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .visitor-counter {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    min-width: 240px;
+    gap: 0.3rem;
+  }
+  
+  .visitor-counter .count {
+    font-size: 1.2rem;
+    min-width: 50px;
+  }
+  
+  .hero-description {
+    font-size: 1rem;
+    padding: 0 var(--spacing-sm);
+  }
+  
+  .cta-buttons {
+    gap: var(--spacing-sm);
+    padding: 0 var(--spacing-sm);
+  }
+  
+  .btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.95rem;
   }
 }
 
