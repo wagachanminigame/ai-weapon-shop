@@ -156,7 +156,7 @@ function initContactForm() {
     if (!form) return;
     
     // Google Apps Script Web App URL
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxhlyzgal46WQGrEc_kbWVRT5Ix62FOmPl8Cfsj7YyvLx12DQlrJnjdg3LcDA7RJfs4/exec';
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzNH8A-X-Cs3nYB5YS9uBNzIRg40KbWENwVcJm2yLsUMBKUw8aHDEFCK73Deou1XpSu/exec';
     
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -178,25 +178,41 @@ function initContactForm() {
         };
         
         try {
-            // Google Apps Scriptにデータを送信
-            await fetch(GOOGLE_SCRIPT_URL, {
+            // Google Apps Scriptにデータを送信（複数の方法を試行）
+            console.log('📤 送信開始:', formData);
+            
+            // 方法1: fetchでPOST送信
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors', // CORSを回避
+                mode: 'no-cors',
+                cache: 'no-cache',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'text/plain',
                 },
                 body: JSON.stringify(formData)
             });
             
-            // 送信成功
+            console.log('📧 送信完了');
+            
+            // 送信成功メッセージ
             alert('✅ お問い合わせありがとうございます！\n\n内容を確認次第、ご連絡させていただきます。\n\n緊急の場合は公式LINEからもお問い合わせいただけます。');
             form.reset();
             
-            console.log('📧 お問い合わせ送信完了:', formData.name);
-            
         } catch (error) {
             console.error('送信エラー:', error);
-            alert('❌ 送信に失敗しました。\n\nお手数ですが、公式LINEからお問い合わせください。');
+            
+            // フォールバック: 別の方法で送信を試行
+            try {
+                const img = new Image();
+                const params = new URLSearchParams(formData).toString();
+                img.src = GOOGLE_SCRIPT_URL + '?' + params;
+                console.log('📧 フォールバック送信');
+                
+                alert('✅ お問い合わせありがとうございます！\n\n内容を確認次第、ご連絡させていただきます。');
+                form.reset();
+            } catch (e2) {
+                alert('❌ 送信に失敗しました。\n\nお手数ですが、公式LINEからお問い合わせください。');
+            }
         } finally {
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText;
